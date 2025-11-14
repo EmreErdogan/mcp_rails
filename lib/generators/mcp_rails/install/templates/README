@@ -1,0 +1,35 @@
+===============================================================================
+
+MCP Rails has been successfully installed! 🎉
+
+Next steps:
+
+1. Expose your models to MCP by adding to your model files:
+
+   class Product < ApplicationRecord
+     include McpRails::McpExposable
+     expose_to_mcp
+   end
+
+2. Configure authentication for production (config/initializers/mcp_rails.rb):
+
+   config.auth_strategy = :token
+   config.auth_token = Rails.application.credentials.mcp[:auth_token]
+
+3. Set up Claude Desktop (copy .mcp.json.example to your Claude config):
+
+   - macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+   - Windows: %APPDATA%\Claude\claude_desktop_config.json
+
+4. Test your MCP server:
+
+   rails console
+   McpRails.server.tools.keys
+   # Should show your exposed model tools
+
+5. Restart your Rails server and Claude Desktop
+
+For more information, visit:
+https://github.com/your-username/mcp_rails
+
+===============================================================================
