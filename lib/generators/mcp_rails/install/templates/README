@@ -1,0 +1,65 @@
+===============================================================================
+
+MCP Rails has been successfully installed! 🎉
+
+Next steps:
+
+1. Expose your models to MCP by adding to your model files:
+
+   class Product < ApplicationRecord
+     include McpRails::McpExposable
+     expose_to_mcp
+   end
+
+   Options:
+   - expose_to_mcp attributes: [:id, :name, :price]  # Selective attributes
+   - expose_to_mcp read_only: true                   # Only list and get
+
+2. Start your Rails server:
+
+   rails server
+
+3. Test the MCP server connection:
+
+   # Test stdio server (what Claude uses)
+   echo '{"jsonrpc":"2.0","id":"1","method":"initialize","params":{"clientInfo":{"name":"test","version":"1.0.0"},"protocolVersion":"2024-11-05"}}' | ruby bin/mcp_server
+
+   # Test HTTP endpoint directly
+   curl -X POST http://localhost:3000/mcp/handle \
+     -H "Content-Type: application/json" \
+     -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
+
+4. Set up Claude Code/Desktop:
+
+   Copy the .mcp.json.example to .mcp.json in your project root:
+   cp .mcp.json.example .mcp.json
+
+   The gem automatically creates a stdio bridge between Claude and your Rails server.
+
+5. Configure authentication for production (config/initializers/mcp_rails.rb):
+
+   config.auth_strategy = :token
+   config.auth_token = Rails.application.credentials.mcp[:auth_token]
+
+   Or use environment variables:
+   config.auth_token = ENV['MCP_AUTH_TOKEN']
+
+6. Restart Claude Code/Desktop to load the MCP server
+
+IMPORTANT NOTES:
+
+- Your Rails server must be running for the MCP connection to work
+- The stdio server (bin/mcp_server) bridges Claude ↔ Rails communication
+- The /mcp endpoint is for HTTP clients, not browser access
+- Use MCP_DEBUG=1 environment variable for debugging
+
+Troubleshooting:
+
+- "No route matches [GET] /mcp" in browser: This is normal - the endpoint only accepts POST
+- Connection refused: Make sure Rails server is running on port 3000
+- Authentication errors: Check your auth configuration in the initializer
+
+For more information, visit:
+https://github.com/your-username/mcp_rails
+
+===============================================================================
